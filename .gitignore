@@ -1,0 +1,6 @@
+# Ignorar ambiente virtual
+venv/
+
+# Ignorar ficheiros temporários do Python e Pytest
+__pycache__/
+.pytest_cache/
