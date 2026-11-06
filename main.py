@@ -8,8 +8,7 @@ class Transacao(BaseModel):
     valor: float
     cidade: str
 
-# 1. Simulação de Banco de Dados em Memória (Cache)
-# Em produção real, utilizaríamos o Redis para isso.
+# 1. Simulação de Banco de Dados
 historico_usuarios = {}
 
 @app.get("/")
@@ -24,20 +23,18 @@ def analisar_transacao(transacao: Transacao):
     if transacao.valor > 10000.00:
         return {"status": "bloqueado", "motivo": "Valor excede limite de segurança."}
     
-    # Regra 2: Verificação de "Viagem Impossível" (Comportamento)
-    # Verifica se o usuário já tem histórico e se a cidade mudou repentinamente
+    # Regra 2: Verificação de comportamento
     if usuario in historico_usuarios:
         ultima_cidade = historico_usuarios[usuario]["cidade"]
         
         if ultima_cidade != transacao.cidade:
-            # Atualiza o histórico antes de bloquear para registrar a tentativa
+            
             historico_usuarios[usuario] = {"cidade": transacao.cidade}
             return {
                 "status": "bloqueado", 
                 "motivo": f"Suspeita de fraude: transação anterior foi em '{ultima_cidade}' e a atual em '{transacao.cidade}'."
             }
     
-    # 3. Atualizar o histórico com a transação aprovada
     historico_usuarios[usuario] = {"cidade": transacao.cidade}
     
     return {"status": "aprovado", "motivo": "Transação dentro dos padrões normais."}
