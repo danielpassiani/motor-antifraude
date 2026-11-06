@@ -12,6 +12,8 @@ Uma API RESTful desenvolvida em Python (FastAPI) para analisar transações fina
 1. **Limite de Valor Financeiro:** Bloqueio imediato de transações que excedem o teto de segurança operacional (R$ 10.000).
 2. **Viagem Impossível (Behavioral Tracking):** Cruzamento de dados de localização do usuário. Bloqueia transações sequenciais aprovadas em cidades diferentes em um curto espaço de tempo.
 
+<img width="1417" height="907" alt="Captura de tela 2026-11-05 221237" src="https://github.com/user-attachments/assets/af74c238-aebd-4984-9750-be76d7fe6594" />
+
 ## 🛠️ Como Executar o Projeto Localmente
 
 1. Clone o repositório:
