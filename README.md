@@ -1,22 +1,71 @@
 # Motor Anti-Fraude API 🛡️
 
-Uma API RESTful desenvolvida em Python (FastAPI) para analisar transações financeiras e detectar padrões de fraude em tempo real. O sistema utiliza validação rigorosa de dados e simula um cache em memória para rastrear comportamentos suspeitos, como a regra de "Viagem Impossível".
+Uma API REST desenvolvida em Python com FastAPI para simular a análise de transações financeiras e identificar comportamentos suspeitos. O projeto aplica regras simples de negócio, validação de dados e armazenamento temporário em memória.
 
-## 🚀 Tecnologias Utilizadas
-* **Python 3.11**
-* **FastAPI:** Framework assíncrono de alta performance para a construção das rotas.
-* **Pydantic:** Tipagem estática e validação rigorosa dos payloads.
-* **Pytest:** Bateria de testes unitários automatizados para garantir a estabilidade das regras de negócio.
+## 🚀 Tecnologias utilizadas
 
-## ⚙️ Regras de Negócio Implementadas
-1. **Limite de Valor Financeiro:** Bloqueio imediato de transações que excedem o teto de segurança operacional (R$ 10.000).
-2. **Viagem Impossível (Behavioral Tracking):** Cruzamento de dados de localização do usuário. Bloqueia transações sequenciais aprovadas em cidades diferentes em um curto espaço de tempo.
+- **Python 3.11**
+- **FastAPI:** criação dos endpoints da API.
+- **Pydantic:** validação dos dados recebidos.
+- **Pytest:** testes automatizados.
+- **Git e GitHub:** versionamento do projeto.
 
-<img width="1417" height="907" alt="Captura de tela 2026-11-05 221237" src="https://github.com/user-attachments/assets/af74c238-aebd-4984-9750-be76d7fe6594" />
+## ⚙️ Regras de negócio
 
-## 🛠️ Como Executar o Projeto Localmente
+1. **Limite de valor financeiro:** bloqueia transações acima de R$ 10.000.
+2. **Mudança de cidade em curto intervalo:** compara a transação com a última transação aprovada do usuário. Se a cidade for diferente e o intervalo for de até 60 minutos, a transação é bloqueada.
 
-1. Clone o repositório:
+### Como funciona o histórico
+
+O sistema guarda somente a última transação **aprovada** de cada usuário, incluindo cidade e data/hora. Uma transação bloqueada não altera o histórico. Dessa forma, novas tentativas continuam sendo comparadas com a última transação aprovada.
+
+A janela temporal pode ser ajustada pela constante `JANELA_FRAUDE_MINUTOS` no arquivo `main.py`.
+
+O campo `data_hora` é opcional. Se não for enviado, a API utiliza o horário atual em UTC. Para informar manualmente, use o formato ISO 8601, por exemplo: `2026-11-07T10:30:00Z`.
+
+## 🛠️ Como executar localmente
+
+Clone o repositório:
+
 ```bash
 git clone https://github.com/danielpassiani/motor-antifraude.git
 cd motor-antifraude
+```
+
+Crie e ative um ambiente virtual (opcional, mas recomendado):
+
+```bash
+python -m venv venv
+```
+
+No Windows:
+
+```bash
+venv\\Scripts\\activate
+```
+
+Instale as dependências:
+
+```bash
+pip install fastapi uvicorn pydantic pytest httpx
+```
+
+Inicie a API:
+
+```bash
+uvicorn main:app --reload
+```
+
+A documentação interativa estará disponível em http://127.0.0.1:8000/docs.
+
+## 🧪 Executar os testes
+
+```bash
+pytest -v
+```
+
+Os testes verificam o endpoint de saúde, aprovação de transações, limite financeiro, regra de mudança de cidade, preservação do histórico após bloqueio, janela temporal e validação de valor positivo.
+
+## 📌 Observação
+
+Este é um projeto educacional para praticar desenvolvimento backend e regras de negócio. O histórico é mantido em memória e é perdido quando a aplicação é reiniciada; portanto, esta implementação não deve ser utilizada como sistema antifraude de produção.
